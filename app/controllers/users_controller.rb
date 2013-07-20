@@ -3,12 +3,15 @@ class UsersController < ApplicationController
   before_filter :signed_in_user, only: [:index, :edit, :update, :destroy]
   before_filter :correct_user, only: [:edit, :update]
   before_filter :admin_user, only: :destroy
+  before_filter :prevent_from_second_registration, only: [:new, :create]
 
 
   def new
     @user = User.new
   end
+  
   def create
+    
     @user = User.new params[:user]
     if @user.save
       sign_in @user
@@ -43,6 +46,11 @@ class UsersController < ApplicationController
   end
   
   def destroy
+    user_needs_to_be_destroyed = User.find(params[:id])
+    if current_user.id == user_needs_to_be_destroyed.id
+      redirect_to root_path
+      return
+    end
     User.find(params[:id]).destroy
     flash[:success] = "User destroy"
     redirect_to users_path
@@ -62,6 +70,10 @@ class UsersController < ApplicationController
     
     def admin_user
       redirect_to(root_path) unless current_user.admin?
+    end
+    
+    def prevent_from_second_registration
+      redirect_to root_path, notice: "You already exist" unless current_user == nil
     end
   
 end

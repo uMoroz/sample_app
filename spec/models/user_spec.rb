@@ -29,6 +29,14 @@ describe User do
   it { should be_valid }
   it { should_not be_admin }
   
+  
+  describe "accessible attributes" do
+    it "should not allow access to admin" do
+      expect { @user.update_attributes admin: true }.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
+    end
+  end
+  
+  
   #remember token
   ###################################################
   describe "remember token" do
@@ -110,6 +118,9 @@ describe User do
       specify { user_for_invalid_password.should be_false }
     end
   end
+  
+  #admin attribute
+  ###############################################################
   
   describe "with admin attribute set to 'true'" do
     before do

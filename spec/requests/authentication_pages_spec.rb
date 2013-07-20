@@ -37,6 +37,8 @@ describe "AuthenticationPages" do
         before { click_link "Sign out" }
         it { should have_link "Sign in" }
       end
+      
+      
     end
   end
   
@@ -70,6 +72,14 @@ describe "AuthenticationPages" do
       describe "after signing in" do
         it "should render the desires protected page" do
           #page.should have_selector "title", text: "Edit user"
+        end
+        describe "it should not create a new user" do
+          let(:user) { FactoryGirl.create(:user) }
+          before do
+            sign_in user
+            visit new_user_path
+          end
+          it { should have_selector "a", text: "Sign up now!"}
         end
       end
       describe "in the Users controller" do
