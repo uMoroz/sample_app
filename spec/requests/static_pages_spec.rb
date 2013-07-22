@@ -33,6 +33,16 @@ describe "StaticPages" do
           page.should have_selector "li##{item.id}", text: item.content
         end
       end
+      it { should have_selector "span" , text: user.microposts.count}
+      
+      describe "pagination " do
+        before(:all) { 31.times { Factory.create(:micropost, user: user) }}
+        after(:all) { user.feed.delete_all }
+        it { should have_selector "div.pagination" }
+        it { should match_exactly(30, ".feed_item") }
+        
+      end
+      
     end
     
   end

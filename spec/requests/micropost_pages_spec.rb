@@ -40,6 +40,17 @@ describe "MicropostPages" do
         expect { click_link "delete" }.should change(Micropost, :count).by(-1)
       end
     end
+    describe "as other user" do
+      let(:posts_owner) { FactoryGirl.create(:user, name: "post owner") }
+      let(:passing_by) { FactoryGirl.create(:user, name: "passing by") }
+      before do
+        FactoryGirl.create(:micropost, user: user)
+        sign_in passing_by
+        visit user_path posts_owner
+      end
+      it { should_not have_link "delete" }
+      
+    end
   end
   
   
